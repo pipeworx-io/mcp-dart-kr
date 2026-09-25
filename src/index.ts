@@ -636,17 +636,25 @@ function collapse(s: string): string {
   return s.replace(/\s+/g, ' ').trim();
 }
 /**
- * DART — Korea's Data Analysis, Retrieval and Transfer System.
+ * DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean
+ * equivalent of SEC EDGAR. BRING YOUR OWN FREE DART KEY: free signup at
+ * https://opendart.fss.or.kr/uss/umt/cmm/EgovMberInsertView.do (20,000
+ * calls/day per key, no cost). Pass via _apiKey; gateway forwards it as the
+ * crtfc_key DART expects.
  *
- * The Korean equivalent of SEC EDGAR. Run by the FSC/FSS (Financial
- * Services Commission), DART receives every corporate disclosure filed
- * by KOSPI/KOSDAQ-listed and other reporting companies: periodic
- * reports (annual / quarterly / half-year), material events, ownership
- * changes, insider trading, fair-disclosure announcements.
+ * Run by the FSC/FSS (Financial Services Commission), DART receives every
+ * corporate disclosure filed by KOSPI/KOSDAQ-listed and other reporting
+ * companies: periodic reports (annual / quarterly / half-year), material
+ * events, ownership changes, insider trading, fair-disclosure announcements.
  *
- * BYO key — free signup at https://opendart.fss.or.kr/uss/umt/cmm/EgovMberInsertView.do
- * (20,000 calls/day per key). Pass via _apiKey; gateway forwards it
- * as the crtfc_key DART expects.
+ * BYOK ONLY, on purpose — do not add a platformKeyEnv here. DART's Terms of
+ * Use (opendart.fss.or.kr/intro/terms.do, Article 19(2)) bar a member from
+ * letting a THIRD PARTY use their ID/password/authentication key ("회원은
+ * ID 및 비밀번호, 인증키를 제3자에게 이용하게 해서는 안 됩니다"), and
+ * Article 19(5) caps one member to a single key. A gateway fronting one
+ * Pipeworx-held key for many different callers is exactly the third-party
+ * use that clause forbids, so this stays a per-caller credential rather than
+ * a platform one (checked 2026-09-25, fleet #2419).
  *
  * corp_code (8-digit DART-internal identifier) is the primary key
  * across all endpoints. Different from KRX stock_code (6-digit ticker).

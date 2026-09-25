@@ -2,8 +2,8 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.pipeworx-io/dart-kr",
   "title": "Dart Kr",
-  "description": "DART — Korea's Data Analysis, Retrieval and Transfer System.",
-  "version": "0.1.1",
+  "description": "DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean",
+  "version": "0.1.2",
   "websiteUrl": "https://pipeworx.io/packs/dart-kr",
   "repository": {
     "url": "https://github.com/pipeworx-io/mcp-dart-kr",
