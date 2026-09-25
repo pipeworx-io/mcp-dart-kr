@@ -452,7 +452,42 @@ async function fetchWithTimeout(
         ),
       );
     }
-    throw err;
+    // Fleet #2382. Everything that isn't a timeout/abort here is a genuine
+    // NETWORK-LEVEL failure — DNS resolution, connection refused, TLS handshake,
+    // Cloudflare's own "Network connection lost." — meaning `fetch()` itself
+    // threw and no HTTP response of any kind was ever received. Until this fix
+    // that raw exception was rethrown VERBATIM: a bare `TypeError: fetch failed`
+    // (or the Workers-runtime equivalent) names no upstream, carries no class
+    // token, and reads exactly like a defect in OUR code — because it says
+    // nothing about the call at all. It landed in `error`, the tier that means
+    // "Pipeworx has a defect", for every one of the (at the time of writing)
+    // ~470 packs that call this helper directly with no wrapper of their own.
+    //
+    // `dexscreener` hit this independently (fleet #1579) and fixed it with a
+    // bespoke per-pack try/catch around `fetchWithTimeout`. That fix is correct
+    // but only covers one pack; every other caller of this shared helper still
+    // leaked the raw exception. Moving the same fix HERE — the one place that
+    // already carries the timeout case — covers every pack that uses
+    // `fetchWithTimeout` without a wrapper, for free, and without widening
+    // `classifyToolError`'s regex list: the fix is giving the message a proper
+    // `upstream_down:` token at the point the two facts (no response was ever
+    // received, and which host we were trying to reach) are actually in hand,
+    // not teaching the classifier to guess from prose after the fact.
+    //
+    // Safe on the same grounds as the timeout branch above: no argument a
+    // caller passes can make `fetch()` itself throw a connection-level error,
+    // so this is always an availability failure, never a caller mistake. Same
+    // `markInternalOrigin` treatment — an origin we run that never answered is
+    // still ours, not a third party's outage.
+    const raw = err instanceof Error ? err.message : String(err);
+    throw new Error(
+      markInternalOrigin(
+        `upstream_down: could not reach ${name} at all (${raw.slice(0, 160)}). ` +
+          `No request reached ${name}, so this says NOTHING about whether the arguments you passed ` +
+          'are valid — do not re-check them on the strength of this error. Retry shortly.',
+        url,
+      ),
+    );
   }
 }
 
@@ -637,24 +672,17 @@ function collapse(s: string): string {
 }
 /**
  * DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean
- * equivalent of SEC EDGAR. BRING YOUR OWN FREE DART KEY: free signup at
- * https://opendart.fss.or.kr/uss/umt/cmm/EgovMberInsertView.do (20,000
- * calls/day per key, no cost). Pass via _apiKey; gateway forwards it as the
- * crtfc_key DART expects.
+ * equivalent of SEC EDGAR. Works with no key: served on a platform key by
+ * Bruce's decision 2026-09-25 despite Article 19(2); see fleet #2439.
+ * Callers may still bring their own key via _apiKey (free signup at
+ * https://opendart.fss.or.kr/uss/umt/cmm/EgovMberInsertView.do, 20,000
+ * calls/day per key) — a caller-supplied key always wins over the platform
+ * one. Gateway forwards it as the crtfc_key DART expects.
  *
  * Run by the FSC/FSS (Financial Services Commission), DART receives every
  * corporate disclosure filed by KOSPI/KOSDAQ-listed and other reporting
  * companies: periodic reports (annual / quarterly / half-year), material
  * events, ownership changes, insider trading, fair-disclosure announcements.
- *
- * BYOK ONLY, on purpose — do not add a platformKeyEnv here. DART's Terms of
- * Use (opendart.fss.or.kr/intro/terms.do, Article 19(2)) bar a member from
- * letting a THIRD PARTY use their ID/password/authentication key ("회원은
- * ID 및 비밀번호, 인증키를 제3자에게 이용하게 해서는 안 됩니다"), and
- * Article 19(5) caps one member to a single key. A gateway fronting one
- * Pipeworx-held key for many different callers is exactly the third-party
- * use that clause forbids, so this stays a per-caller credential rather than
- * a platform one (checked 2026-09-25, fleet #2419).
  *
  * corp_code (8-digit DART-internal identifier) is the primary key
  * across all endpoints. Different from KRX stock_code (6-digit ticker).
