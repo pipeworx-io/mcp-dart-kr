@@ -1,6 +1,6 @@
 {
   "name": "@pipeworx/mcp-dart-kr",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean equivalent of SEC EDGAR. Works with no key: served on a platform key by Bruce's decision 2026-09-25 despite Article 19(2); see fleet #2439.",
   "type": "module",
   "main": "src/index.ts",
@@ -26,7 +26,7 @@
     "@cloudflare/workers-types": "^4.20260405.1"
   },
   "pipeworx": {
-    "sourceHash": "v1-e20ea5320cc0c07c1f441667d34013b453bb995f345d95ef4f2969f55d7856ca",
-    "sourceCommit": "8355bf3d1eece256a62a89dba2278e7a77bebe07"
+    "sourceHash": "v1-8d10fe657d14beef716ee589531ba4829a5a2033d0c631873223291a979681d1",
+    "sourceCommit": "01241619b78233fd55d0e3612331499a63f03ae7"
   }
 }
