@@ -1,12 +1,20 @@
 {
   "name": "@pipeworx/mcp-dart-kr",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean equivalent of SEC EDGAR. Works with no key: served on a platform key by Bruce's decision 2026-09-25 despite Article 19(2); see fleet #2439.",
   "type": "module",
-  "main": "src/index.ts",
-  "types": "src/index.ts",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./tools.json": "./tools.json",
+    "./package.json": "./package.json"
+  },
   "bin": {
     "mcp-dart-kr": "bin/cli.js"
+  },
+  "files": ["bin/", "lib/", "tools.json", "server.json"],
+  "engines": {
+    "node": ">=18"
   },
   "keywords": ["mcp", "mcp-server", "model-context-protocol", "pipeworx", "dart-kr"],
   "license": "MIT",
@@ -14,19 +22,12 @@
     "type": "git",
     "url": "git+https://github.com/pipeworx-io/mcp-dart-kr.git"
   },
-  "scripts": {
-    "typecheck": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0",
-    "tsx": "^4.19.0"
-  },
-  "devDependencies": {
-    "typescript": "^5.9.3",
-    "@cloudflare/workers-types": "^4.20260405.1"
-  },
+  "mcpName": "io.github.pipeworx-io/dart-kr",
   "pipeworx": {
-    "sourceHash": "v1-8d10fe657d14beef716ee589531ba4829a5a2033d0c631873223291a979681d1",
-    "sourceCommit": "01241619b78233fd55d0e3612331499a63f03ae7"
+    "mode": "gateway",
+    "slug": "dart-kr",
+    "gatewaySlug": "dart-kr",
+    "sourceHash": "v1-f6ac945e643078396b5179906042ed816d7bcec33aea3e1dc925124a618c4061",
+    "sourceCommit": "0b3faaa4d85299a961dd86dea75a0f0e1dad280c"
   }
 }
