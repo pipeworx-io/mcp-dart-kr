@@ -3,7 +3,7 @@
   "name": "io.github.pipeworx-io/dart-kr",
   "title": "Dart Kr",
   "description": "DART — Korea's Data Analysis, Retrieval and Transfer System. The Korean equivalent of SEC EDGAR.…",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "websiteUrl": "https://pipeworx.io/packs/dart-kr",
   "repository": {
     "url": "https://github.com/pipeworx-io/mcp-dart-kr",
